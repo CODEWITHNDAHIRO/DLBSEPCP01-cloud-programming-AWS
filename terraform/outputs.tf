@@ -79,3 +79,65 @@ output "target_group_arn" {
     description = "ARN of the target group"
     value   = aws_lb_target_group.main.arn 
 }
+
+#=====================================================================
+# EC2 AND LAUNCH TEMPLATE OUTPUTS 
+#=====================================================================
+
+output "launch_template_id" {
+    description = "Launch template ID"
+    value   = aws_launch_template.main.id 
+
+}
+ 
+output "iam_instance_profile_arn" {
+    description = "IAM instance profile ARN"
+    value   = aws_iam_instance_profile.ec2_profile.arn 
+}
+#============================================================================================
+# AUTO SCALING GROUP OUTPUTS
+#============================================================================================\
+
+output "asg_name" {
+    description = "Auto Scaling Group name" 
+    value = aws_autoscaling_group.main.name 
+}
+output "asg_min_size" {
+    description = "Minimum instances"
+    value  = aws_autoscaling_group.main.min_size 
+}
+
+output "asg_min_size{
+    description = "Minimum instances"
+    value = aws_autoscaling_group.main.min_size 
+}
+
+output "asg_max_size" {
+    description = "Maximum instances"
+    value  = aws_autoscaling_group.main.max_size 
+}
+
+# ARCHITECTURE SUMMARY 
+
+output "architecture_summary" {
+    description = "Complete architecture deployed"
+    value   = <<-EOT 
+
+    VPC Foundation 
+    -VPC: 10.0.0.0/16
+    -Public subnets: AZ-1, AZ-2
+    -Private subnets: AZ-1, AZ-2
+    -Security groups: ALB, EC2
+
+    Load balancer
+    -ALB : ${aws_lb.main.dns_name}
+    -Target Group: Health checks every 30 seconds
+    -Listener : HTTP port 80
+
+    Compute Layer
+    -Launch Template: Ubuntu 24.04 LTS + Nginx 
+    -ASG: 2-10 instances
+    -Scale-up: CPU > 70%
+    -Scale-down: CPU < 30%
+EOT 
+}

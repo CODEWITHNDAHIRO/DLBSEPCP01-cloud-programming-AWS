@@ -1,0 +1,85 @@
+resource "aws_autoscaling_group" "main"{
+    name = "iu-asg"
+    vpc_zone_identifier = [aws_subnet.private_az1.id, aws_subnet.private_az2.id]
+    target_group_arns = [ aws_lb_target_group.main.arn]
+    health_check_type = "ELB"
+    health_check_grace_period = 300
+
+    min_size  = 2
+    max_size  = 10
+    desired_capacity = 2
+
+    launch_template {
+        id    = aws_launch_template.main.id 
+        version = "$Latest"
+    }
+    tag {
+        key      = "Name"
+        value   = "iu-asg-instance"
+        propagate_at_launch = true 
+
+    }
+
+    lifecycle {
+        create_before_destroy = true 
+
+    }
+}
+
+# SCALE UP POLICY 
+
+resource "aws_autoscaling_policy" "scale_up" {
+    name  = "iu-scale-up"
+    scaling_adjustment = 1
+    adjustment_type = "ChangeInCapacity"
+    cooldown    =  300
+    autoscaling_group_name  = aws_autoscaling_group.main.name 
+}
+
+# SCALE UP CLOUDWATCH ALARM 
+
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+    alarm_name = "iu-high-cpu"
+    comparison_operator = "GreaterThanOrEqualToThreshold"
+    evaluation_periods = 1
+    metric_name = "CPUUtilization"
+    namespace  = "AWS/EC2"
+    period = 60
+    statistic = "Average"
+    threshold = 70
+
+    dimensions = {
+        AutoScalingGroupName = aws_autoscaling_group.main.name 
+
+    }
+    alarm_actions = [aws_autoscaling_policy.scale_up.arn]
+}
+
+# SCALE-DOWN POLICY 
+
+resource "aws_autoscaling_policy" "scale_down" {
+    name  = "iu-scale-down"
+    scaling_adjustment = -1
+    adjustement_type = "ChangeInCapacity"
+    cooldown = 600
+    autoscaling_group_name = aws_autoscaling_group.main.name 
+}
+
+# SCALE-DOWN CLOUDWATCH ALARM 
+
+resource "aws_cloudwatch_metric_alarm" "low_cpu" {
+    alarm_name = "iu-low-cpu"
+    comparison_operator = "LessThanOrEqualToThreshold"
+    evaluation_periods = 1
+    metric_name = "CPUUtilization"
+    namespace = "AWS/EC2"
+    period = 120
+    statistic = "Average"
+    threshold = 30
+
+    dimensions = {
+        AutoscalingGroupName = aws_autoscaling_group.main.name 
+
+    }
+    alarm_actions = [aws_autoscaling_policy.scale_down.arn]
+}
