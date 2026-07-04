@@ -15,7 +15,7 @@ This project implements the conception phase approved by my assessor:
 
  ## Project status 
  - [x] phase 1: Conception (approved)
- - [ ] phase 2: Development (in progress)
+ - [x] phase 2: Development (done)
  - [ ] phase 3: Finalization (pending)
 
  ## Repository Structure
