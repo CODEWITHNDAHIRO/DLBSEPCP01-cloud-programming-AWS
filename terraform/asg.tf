@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "main" {
-  name                = "iu-asg"
+  name                = "iu-asg-v2"
   vpc_zone_identifier = [aws_subnet.private_az1.id, aws_subnet.private_az2.id]
   target_group_arns   = [aws_lb_target_group.main.arn]
   health_check_type   = "ELB"
