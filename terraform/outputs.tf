@@ -124,3 +124,19 @@ output "deployment_note" {
   description = "Deployment status"
   value       = "VPC + Subnets + ALB + ASG created successfully"
 }
+
+#CLOUD FRONT CDN outputs 
+
+output "cloudfront_domain_name" {
+        description = "CloudFront distribution domain name (global endpoint for users)"
+        value = aws_cloudfront_distribution.main.domain_name
+    }
+    output "cloudfront_distribution_id" {
+        description = "Cloudfront distribution ID (for cache invalidation)"
+        value = aws_cloudfront_distribution.main.id
+    }
+    output "cloudfront_url" {
+        description = "Full CloudFront URL for testing"
+        value = "https://${aws_cloudfront_distribution.main.domain_name}"
+
+    }

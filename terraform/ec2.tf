@@ -53,12 +53,10 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 locals {
   user_data_script = base64encode(<<-EOF
 #!/bin/bash
-set -e
-apt-get update -y
-apt-get upgrade -y
-apt-get install -y nginx
-systemctl enable nginx
-systemctl start nginx
+yum update -y 
+yum install -y httpd 
+systemctl start httpd
+systemctl enable httpd
 cat > /var/www/html/index.html <<'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
