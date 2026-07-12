@@ -23,12 +23,12 @@ output "internet_gateway_id" {
 
 output "public_subnet_az1_id" {
   description = "Public subnet in AZ1 ID"
-  value       = aws_subnet.Public_az1.id
+  value       = aws_subnet.public_az1.id
 }
 
 output "public_subnet_az2_id" {
   description = "Public subnet in AZ2 ID"
-  value       = aws_subnet.Public_az2.id
+  value       = aws_subnet.public_az2.id
 }
 
 # ============================================================================

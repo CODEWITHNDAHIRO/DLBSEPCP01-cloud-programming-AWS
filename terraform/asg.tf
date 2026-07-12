@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "main" {
-  name                = "iu-asg-v3"
+  name                = "iu-asg-v5"
   vpc_zone_identifier = [aws_subnet.private_az1.id, aws_subnet.private_az2.id]
   target_group_arns   = [aws_lb_target_group.main.arn]
   health_check_type   = "ELB"
@@ -34,7 +34,7 @@ resource "aws_autoscaling_policy" "scale_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
-  alarm_name          = "iu-high-cpu"
+  alarm_name          = "iu-high-cpu-v5"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 1
   metric_name         = "CPUUtilization"
@@ -42,11 +42,9 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   period              = 60
   statistic           = "Average"
   threshold           = 70
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.main.name
   }
-
   alarm_actions = [aws_autoscaling_policy.scale_up.arn]
 }
 
@@ -59,7 +57,7 @@ resource "aws_autoscaling_policy" "scale_down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "low_cpu" {
-  alarm_name          = "iu-low-cpu"
+  alarm_name          = "iu-low-cpu-v5"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = 1
   metric_name         = "CPUUtilization"
@@ -67,10 +65,8 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   period              = 120
   statistic           = "Average"
   threshold           = 30
-
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.main.name
   }
-
   alarm_actions = [aws_autoscaling_policy.scale_down.arn]
 }

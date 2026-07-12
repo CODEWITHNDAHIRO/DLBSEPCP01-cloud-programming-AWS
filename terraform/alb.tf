@@ -1,20 +1,20 @@
 resource "aws_lb" "main" {
-  name               = "iu-alb-v3"
+  name               = "iu-alb-v5"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.Public_az1.id, aws_subnet.Public_az2.id]
+  subnets            = [aws_subnet.public_az1.id, aws_subnet.public_az2.id]
 
   tags = {
-    Name = "iu-alb"
+    Name = "iu-alb-v5"
   }
 }
 
 resource "aws_lb_target_group" "main" {
-  name        = "iu-tg-v3"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
+  name     = "iu-tg-v5"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
 
   health_check {
     healthy_threshold   = 2
@@ -23,10 +23,11 @@ resource "aws_lb_target_group" "main" {
     interval            = 30
     path                = "/"
     matcher             = "200"
+    port                = "80"
   }
 
   tags = {
-    Name = "iu-tg"
+    Name = "iu-tg-v5"
   }
 }
 

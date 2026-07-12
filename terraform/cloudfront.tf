@@ -1,13 +1,14 @@
+#============================================================================================================
 # CloudFront Distribution for Global Low Latency (CDN)
+#============================================================================================================
 # Sits in front of ALB, caches content at 600+ edge locations worldwide
-# Fulfills Conception Phase Requirement #1: "Global Low Latency"
 
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "IU Cloud Programming CDN"
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"  # US, Europe, Asia-Pacific
+  price_class         = "PriceClass_100"  
 
   origin {
     domain_name = aws_lb.main.dns_name
@@ -56,4 +57,4 @@ resource "aws_cloudfront_distribution" "main" {
     Environment = "Production"
     ManagedBy   = "Terraform"
   }
-}
+} 
